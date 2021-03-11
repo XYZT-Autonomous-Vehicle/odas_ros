@@ -164,7 +164,7 @@ class OdasServerNode:
                         sst = json.loads(data)
                         self._send_sst(sst)
                     except Exception as e:
-			print(e)
+		        print(e)
                         continue
 
     def _send_sst(self, sst):
