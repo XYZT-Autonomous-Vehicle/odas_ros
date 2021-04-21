@@ -30,3 +30,17 @@ Seems to be nothing on publish
 
 ## Fix:
 unknown. Test in audacity. Increase gain. Re-enable socket
+Try logging to json in tracks and potential in order to verify the issue is with the webserver.
+```
+        # interface: {
+        #     type = "file";
+        #     path = "/home/docker/potential.json";
+        # }
+```
+
+## Issue:
+After running for some time, crashes
+```
+[odas_core_node-3] process has died [pid 554, exit code -11, cmd /home/docker/catkin_ws/devel/lib/odas_ros/odas_core_node __name:=odas_core_node __log:=/home/docker/.ros/log/6e76b818-8da2-11eb-8c21-0242ac110002/odas_core_node-3.log].
+log file: /home/docker/.ros/log/6e76b818-8da2-11eb-8c21-0242ac110002/odas_core_node-3*.log
+```
