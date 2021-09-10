@@ -1,4 +1,4 @@
-FROM xyzt-dev:latest
+FROM xyzt-dev:16-latest
 
 USER root
 RUN \
