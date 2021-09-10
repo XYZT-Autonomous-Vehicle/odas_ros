@@ -1,9 +1,7 @@
-FROM xyzt-dev:16-latest
+FROM xyzt-dev:latest
 
 USER root
 RUN \
-  apt update && \
-  apt upgrade -y && \
   apt install -y \
   libfftw3-dev libconfig-dev libasound2-dev \
   alsa-utils alsa-base

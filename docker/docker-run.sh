@@ -12,4 +12,4 @@ docker run --rm -it \
   -v $WS_DIR:/home/docker/catkin_ws \
   --name xyzt-dev \
   $@ \
-  xyzt-dev:16-odas
+  xyzt-dev:odas
