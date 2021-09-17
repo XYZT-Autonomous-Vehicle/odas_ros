@@ -10,7 +10,7 @@ docker run --rm -it \
   -v $XAUTHORITY:/home/docker/.Xauthority:ro \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v $WS_DIR:/home/docker/catkin_ws \
-  -v /home/$USER/.ssh:/home/docker/.ssh:ro \
+  -v /home/$USER/.ssh:/home/docker/.ssh \
   -v /home/$USER/.gitconfig:/home/docker/.gitconfig:ro \
   --name xyzt-dev \
   $@ \
