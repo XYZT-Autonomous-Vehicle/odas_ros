@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Python libs
+import pdb
 import socket, sys, json
-from thread import *
+from threading import *
 
 # Ros libraries
 import roslib, rospy, rospkg, rospy, threading
@@ -26,7 +27,7 @@ class Msg:
         self.src = json.dumps(self.data["src"])
     
     def printMsg(self):
-        if PRINT : print "RX %s = \nTimeStamp = %s,\nsrc = %s" %(self.name, self.timestamp, json.dumps(self.src))
+        if PRINT : print("RX %s = \nTimeStamp = %s,\nsrc = %s" %(self.name, self.timestamp, json.dumps(self.src)))
         
 
 class odas:
@@ -51,9 +52,10 @@ class odas:
             s.bind((HOST, PORTS[i]))
             s.listen(5)
             self.list_socket.append(s)
-            if PRINT : print "[*] Server listening on %s %d" %(HOST, PORTS[i])
+            if PRINT : print("[*] Server listening on %s %d" %(HOST, PORTS[i]))
 
     def MsgMatching(self):
+        pdb.set_trace()
         for i in range(len(self.list_msg_tracker)):
             for j in range(len(self.list_msg_speech)):
                 if self.list_msg_tracker[i].timestamp == self.list_msg_speech[j].timestamp:
@@ -95,10 +97,10 @@ class odas:
     # Function receiving information from the odas tracker socket and making sure it gets into a 
     # Msg class without being corrupted by the reading of the socket.
         while not rospy.is_shutdown():
-            data = conn.recv(8192)
+            data = str(conn.recv(8192))
             test = data.split(']\n}\n')
             #print len(test[-1]), len(test[0])
-            #print 'my datas are : ', data
+            print('my data are : ', data)
             try:
                 if self.raise_incomplete_Tracker:
                     #print "oh oh i will solve dis"
@@ -108,6 +110,7 @@ class odas:
                     #print 'the modified test is: ', test[0]
                     #print 'what is remaining: ', self.remaining_Tracker
                 for message in test[0:-1:1]:
+                    # bug?
                     message = message + ' ]\n}\n'
                     #print 'my messages are : ', message, '\n\n'
                     msg_ = Msg("tracker",message)
@@ -118,7 +121,7 @@ class odas:
                     self.remaining_Tracker.append(test[-1])
                     #print 'what is remaining: ', self.remaining_Tracker
             except ValueError:
-                if PRINT : print "odas server not working socket Tracker(Take a look at soundusb card id)"
+                if PRINT : print("odas server not working socket Tracker(Take a look at soundusb card id)")
             self.MsgMatching()
             #msg_.printMsg()
             
@@ -128,7 +131,7 @@ class odas:
     # Function receiving information from the odas speech socket and making sure it gets into a 
     # Msg class without being corrupted by the reading of the socket.
         while not rospy.is_shutdown():
-            data = conn.recv(8192)
+            data = str(conn.recv(8192))
             test = data.split(']\n}\n')
             try:
                 if self.raise_incomplete_Speech:
@@ -144,7 +147,7 @@ class odas:
                     self.raise_incomplete_Speech=True
                     self.remaining_Speech.append(test[-1])
             except ValueError:
-                if PRINT : print "odas server not working socket Speech (Take a look at soundusb card id)"
+                if PRINT : print("odas server not working socket Speech (Take a look at soundusb card id)")
             #self.MsgMatching()
             #msg_.printMsg()
            
@@ -155,14 +158,12 @@ class odas:
         while not rospy.is_shutdown():
             connTrack, addrTrack = self.list_socket[0].accept()
             connSpeech, addrSpeech = self.list_socket[1].accept()
-            if PRINT : print '[*] Connected with ' + addrTrack[0] + ':' + str(addrTrack[1])
-            if PRINT : print '[*] Connected with ' + addrSpeech[0] + ':' + str(addrSpeech[1])
-            start_new_thread(self.socketTracker ,(connTrack,))
-            start_new_thread(self.socketSpeech ,(connSpeech,))
+            if PRINT : print('[*] Connected with ' + addrTrack[0] + ':' + str(addrTrack[1]))
+            if PRINT : print('[*] Connected with ' + addrSpeech[0] + ':' + str(addrSpeech[1]))
+            threading.Thread(target=self.socketTracker, args=(connTrack,)).start()
+            threading.Thread(target=self.socketSpeech, args=(connSpeech,)).start()
             # for thread in threading.enumerate():
             #     print(thread.name)
-                
-        s.close()
 
 
 def main(args):
@@ -172,9 +173,9 @@ def main(args):
     try:
         odas_.spin()
     except KeyboardInterrupt:
-        print "Shutting down ROS ODAS driver"
+        print("Shutting down ROS ODAS driver")
 
 if __name__ == '__main__':
-    if PRINT : print "Hello World!\n"
+    if PRINT : print("Hello World!\n")
     main(sys.argv)
-    if PRINT : print "GoodBye World!\n"
+    if PRINT : print("GoodBye World!\n")
